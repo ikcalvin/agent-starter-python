@@ -1,17 +1,22 @@
 import logging
 import os
-
 from dotenv import load_dotenv
+import asyncio
+import json
+import aiohttp
+from typing import Optional
 from livekit import rtc
 from livekit.agents import (
     Agent,
     AgentServer,
     AgentSession,
     JobContext,
-    JobProcess,
     cli,
-    inference,
+    function_tool,
+    RunContext,
     room_io,
+    utils,
+    ToolError,
 )
 from livekit.plugins import noise_cancellation, openai
 
@@ -33,29 +38,53 @@ class Assistant(Agent):
             instructions=instructions,
         )
 
-    # To add tools, use the @function_tool decorator.
-    # Here's an example that adds a simple weather tool.
-    # You also have to add `from livekit.agents import function_tool, RunContext` to the top of this file
-    # @function_tool
-    # async def lookup_weather(self, context: RunContext, location: str):
-    #     """Use this tool to look up current weather information in the given location.
-    #
-    #     If the location is not supported by the weather service, the tool will indicate this. You must tell the user the location's weather is unavailable.
-    #
-    #     Args:
-    #         location: The location to look up weather information for (e.g. city name)
-    #     """
-    #
-    #     logger.info(f"Looking up weather for {location}")
-    #
-    #     return "sunny with a temperature of 70 degrees."
+    async def on_enter(self):
+        await self.session.generate_reply(
+            instructions="Greet the user and offer your assistance.",
+            allow_interruptions=True,
+        )
+    
+    @function_tool(name="get_solar_estimate")
+    async def _http_tool_get_solar_estimate(
+        self, context: RunContext, zip_code: float, monthly_bill: float, roof_type: Optional[str] = None, roof_age: Optional[float] = None, has_ev_plans: Optional[bool] = None, wants_battery: Optional[bool] = None
+    ) -> str | None:
+        """
+        Calculates a rough solar system size estimate based on usage and home details.
 
+        Args:
+            zip_code: 
+            monthly_bill: 
+            roof_type: Accept either Shingles, Flat, Metal, Zinc, Wood Shakes
+            roof_age: How long you have the roof
+            has_ev_plans: If customer plan to own an Electric Vehicle
+            wants_battery: 
+        """
+
+        context.disallow_interruptions()
+
+        url = "https://kcalvin.myvnc.com/webhook-test/get_estimate"
+        payload = {
+            "zip_code": zip_code,
+            "monthly_bill": monthly_bill,
+            "roof_type": roof_type,
+            "roof_age": roof_age,
+            "has_ev_plans": has_ev_plans,
+            "wants_battery": wants_battery,
+        }
+
+        try:
+            session = utils.http_context.http_session()
+            timeout = aiohttp.ClientTimeout(total=10)
+            async with session.post(url, timeout=timeout, json=payload) as resp:
+                if resp.status >= 400:
+                    raise ToolError(f"error: HTTP {resp.status}")
+                return await resp.text()
+        except ToolError:
+            raise
+        except (aiohttp.ClientError, asyncio.TimeoutError) as e:
+            raise ToolError(f"error: {e!s}") from e
 
 server = AgentServer()
-
-
-
-
 
 @server.rtc_session()
 async def my_agent(ctx: JobContext):
@@ -65,30 +94,17 @@ async def my_agent(ctx: JobContext):
         "room": ctx.room.name,
     }
 
+    metadata = json.loads(ctx.job.metadata)
+    user_id = metadata["user_id"]
+    user_name = metadata["user_name"]
+    user_phone = metadata["user_phone"]
+
     # Set up the session with OpenAI Realtime Model
     session = AgentSession(
         llm=openai.realtime.RealtimeModel(
             voice="ballad",
         )
     )
-
-    # To use a realtime model instead of a voice pipeline, use the following session setup instead.
-    # (Note: This is for the OpenAI Realtime API. For other providers, see https://docs.livekit.io/agents/models/realtime/))
-    # 1. Install livekit-agents[openai]
-    # 2. Set OPENAI_API_KEY in .env.local
-    # 3. Add `from livekit.plugins import openai` to the top of this file
-    # 4. Use the following session setup instead of the version above
-    # session = AgentSession(
-    #     llm=openai.realtime.RealtimeModel(voice="marin")
-    # )
-
-    # # Add a virtual avatar to the session, if desired
-    # # For other providers, see https://docs.livekit.io/agents/models/avatar/
-    # avatar = hedra.AvatarSession(
-    #   avatar_id="...",  # See https://docs.livekit.io/agents/models/avatar/plugins/hedra
-    # )
-    # # Start the avatar and wait for it to join
-    # await avatar.start(session, room=ctx.room)
 
     # Start the session, which initializes the voice pipeline and warms up the models
     await session.start(
