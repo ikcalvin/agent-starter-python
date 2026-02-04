@@ -62,7 +62,7 @@ class Assistant(Agent):
 
         context.disallow_interruptions()
 
-        url = "https://kcalvin.myvnc.com/webhook-test/get_estimate"
+        url = "https://kcalvin.myvnc.com/webhook/get_estimate"
         payload = {
             "zip_code": zip_code,
             "monthly_bill": monthly_bill,
@@ -70,6 +70,45 @@ class Assistant(Agent):
             "roof_age": roof_age,
             "has_ev_plans": has_ev_plans,
             "wants_battery": wants_battery,
+        }
+
+        try:
+            session = utils.http_context.http_session()
+            timeout = aiohttp.ClientTimeout(total=10)
+            async with session.post(url, timeout=timeout, json=payload) as resp:
+                if resp.status >= 400:
+                    raise ToolError(f"error: HTTP {resp.status}")
+                return await resp.text()
+        except ToolError:
+            raise
+        except (aiohttp.ClientError, asyncio.TimeoutError) as e:
+            raise ToolError(f"error: {e!s}") from e
+
+    @function_tool(name="book_consultation")
+    async def _http_tool_book_consultation(
+        self, context: RunContext, name: str, phone: str, street: str, city: str, state: str, date_time: str
+    ) -> str | None:
+        """
+        Books a consultation for the customer.
+
+        Args:
+            name: Customer's full name
+            phone: Customer's 10-digit phone number
+            street: Street address
+            city: City
+            state: State
+            date_time: Preferred date and time for the consultation in ISO 8601 format
+        """
+        context.disallow_interruptions()
+
+        url = "https://kcalvin.myvnc.com/webhook-test/book_consultation"
+        payload = {
+            "name": name,
+            "phone": phone,
+            "street": street,
+            "city": city,
+            "state": state,
+            "date_time": date_time,
         }
 
         try:
