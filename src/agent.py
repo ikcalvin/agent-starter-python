@@ -84,30 +84,55 @@ class Assistant(Agent):
         except (aiohttp.ClientError, asyncio.TimeoutError) as e:
             raise ToolError(f"error: {e!s}") from e
 
-    @function_tool(name="book_consultation")
-    async def _http_tool_book_consultation(
-        self, context: RunContext, name: str, phone: str, street: str, city: str, state: str, date_time: str
+    @function_tool(name="save_lead")
+    async def _http_tool_save_lead(
+        self,
+        context: RunContext,
+        name: str,
+        phone: str,
+        email: str,
+        street: str,
+        city: str,
+        state: str,
+        zip_code: str,
+        roof_type: str,
+        monthly_bill: str,
+        interest_battery: bool,
+        interest_ev: bool,
+        date_time: str,
     ) -> str | None:
         """
-        Books a consultation for the customer.
+        Saves the lead information and books the consultation.
 
         Args:
             name: Customer's full name
             phone: Customer's 10-digit phone number
+            email: Customer's email address
             street: Street address
             city: City
             state: State
+            zip_code: ZIP code
+            roof_type: Type of roof
+            monthly_bill: Average monthly electric bill
+            interest_battery: Whether the customer is interested in battery backup
+            interest_ev: Whether the customer plans to get an EV
             date_time: Preferred date and time for the consultation in ISO 8601 format
         """
         context.disallow_interruptions()
 
-        url = "https://kcalvin.myvnc.com/webhook-test/book_consultation"
+        url = "https://kcalvin.myvnc.com/webhook-test/save_lead"
         payload = {
             "name": name,
             "phone": phone,
+            "email": email,
             "street": street,
             "city": city,
             "state": state,
+            "zip_code": zip_code,
+            "roof_type": roof_type,
+            "monthly_bill": monthly_bill,
+            "interest_battery": interest_battery,
+            "interest_ev": interest_ev,
             "date_time": date_time,
         }
 
