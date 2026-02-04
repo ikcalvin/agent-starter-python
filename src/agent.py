@@ -88,16 +88,19 @@ server = AgentServer()
 
 @server.rtc_session()
 async def my_agent(ctx: JobContext):
+    """
+    Entry point for the agent.
+    
+    This agent requires the following metadata in the JobContext (JSON string):
+    - user_id: Unique identifier for the user
+    - user_name: Name of the user
+    - user_phone: Phone number of the user (if applicable)
+    """
     # Logging setup
     # Add any other context you want in all log entries here
     ctx.log_context_fields = {
         "room": ctx.room.name,
     }
-
-    metadata = json.loads(ctx.job.metadata)
-    user_id = metadata["user_id"]
-    user_name = metadata["user_name"]
-    user_phone = metadata["user_phone"]
 
     # Set up the session with OpenAI Realtime Model
     session = AgentSession(

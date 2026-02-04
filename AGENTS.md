@@ -60,3 +60,17 @@ Important: When modifying core agent behavior such as instructions, tool descrip
 You can make use of the LiveKit CLI (`lk`) for various tasks, with user approval. Installation instructions are available at https://docs.livekit.io/home/cli if needed.
 
 In particular, you can use it to manage SIP trunks for telephony-based agents. Refer to `lk sip --help` for more information.
+
+## Metadata Requirements
+
+This agent expects the following metadata to be passed in the `JobContext` as a JSON string when the user connects:
+
+```json
+{
+  "user_id": "user-123",
+  "user_name": "John Doe",
+  "user_phone": "+1234567890" // Optional
+}
+```
+
+Ensure your client application (e.g., frontend or SIP trunking configuration) packages this information into the `metadata` field of the room/participant options.
