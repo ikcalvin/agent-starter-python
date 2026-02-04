@@ -40,7 +40,7 @@ class Assistant(Agent):
 
     async def on_enter(self):
         await self.session.generate_reply(
-            instructions="Greet the user and offer your assistance.",
+            instructions="Greeting the user in English. Say exactly: 'Thanks for calling about solar for your home! I can give you a quick savings estimate in about two minutes. Sound good?'",
             allow_interruptions=True,
         )
     
@@ -54,7 +54,7 @@ class Assistant(Agent):
         Args:
             zip_code: 
             monthly_bill: 
-            roof_type: Accept either Shingles, Flat, Metal, Zinc, Wood Shakes
+            roof_type: Accept either Composite, Concrete, Clay, Metal, Wood Shake, Other
             roof_age: How long you have the roof
             has_ev_plans: If customer plan to own an Electric Vehicle
             wants_battery: 
