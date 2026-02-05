@@ -1,0 +1,142 @@
+/* AI Orb Color Theme - Futuristic cyan/blue/purple */
+.orbContainer {
+  --orb-primary: #00d4ff;
+  --orb-secondary: #7c3aed;
+  --orb-accent: #a855f7;
+  --orb-glow: rgba(0, 212, 255, 0.6);
+  --orb-glow-secondary: rgba(124, 58, 237, 0.4);
+
+  position: relative;
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Main orb core with gradient */
+.orbCore {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    #ffffff 0%,
+    var(--orb-primary) 20%,
+    var(--orb-secondary) 60%,
+    #1e1b4b 100%
+  );
+  box-shadow:
+    0 0 40px var(--orb-glow),
+    0 0 80px var(--orb-glow-secondary),
+    0 0 120px rgba(168, 85, 247, 0.2),
+    inset 0 0 30px rgba(255, 255, 255, 0.2);
+  z-index: 3;
+}
+
+/* Inner highlight for 3D depth */
+.innerHighlight {
+  position: absolute;
+  top: 15%;
+  left: 20%;
+  width: 30%;
+  height: 30%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+}
+
+/* Primary glow ring */
+.ring1 {
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid var(--orb-primary);
+  box-shadow:
+    0 0 30px var(--orb-glow),
+    0 0 60px var(--orb-glow-secondary),
+    inset 0 0 20px var(--orb-glow);
+  z-index: 2;
+}
+
+/* Secondary outer ring */
+.ring2 {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--orb-accent);
+  box-shadow:
+    0 0 20px rgba(168, 85, 247, 0.3),
+    0 0 40px rgba(124, 58, 237, 0.15);
+  z-index: 1;
+}
+
+/* Floating particles */
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--orb-primary);
+  box-shadow: 0 0 10px var(--orb-glow);
+  z-index: 4;
+}
+
+.particle1 {
+  top: 20%;
+  left: 15%;
+}
+
+.particle2 {
+  top: 25%;
+  right: 20%;
+}
+
+.particle3 {
+  bottom: 30%;
+  left: 25%;
+}
+
+.particle4 {
+  bottom: 25%;
+  right: 15%;
+}
+
+/* Ambient rotation animation for added life */
+@keyframes ambientRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.orbContainer::before {
+  content: "";
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    var(--orb-glow) 60deg,
+    transparent 120deg,
+    var(--orb-glow-secondary) 180deg,
+    transparent 240deg,
+    var(--orb-glow) 300deg,
+    transparent 360deg
+  );
+  opacity: 0.3;
+  animation: ambientRotate 8s linear infinite;
+  z-index: 0;
+}

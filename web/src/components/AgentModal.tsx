@@ -6,9 +6,11 @@ import {
   useLocalParticipant,
   useVoiceAssistant,
 } from "@livekit/components-react";
-import { motion, Variants } from "framer-motion";
+import "@livekit/components-styles";
+import { motion } from "framer-motion";
 import { Mic, MicOff, PhoneOff, X } from "lucide-react";
 import styles from "./AgentModal.module.css";
+import { AgentAudioVisualizerAura } from "@/components/agent-audio-visualizer-aura";
 
 interface AgentModalProps {
   isOpen: boolean;
@@ -59,7 +61,18 @@ export default function AgentModal({ isOpen, onClose }: AgentModalProps) {
         </button>
 
         {token === "" ? (
-          <div className={styles.status}>Connecting to Global Solar Net...</div>
+          <>
+            <div className={styles.visualizer}>
+              <AgentAudioVisualizerAura
+                state="connecting"
+                size="lg"
+                themeMode="dark"
+              />
+            </div>
+            <div className={styles.status}>
+              Connecting to Global Solar Net...
+            </div>
+          </>
         ) : (
           <LiveKitRoom
             token={token}
@@ -69,13 +82,12 @@ export default function AgentModal({ isOpen, onClose }: AgentModalProps) {
             video={false}
             onDisconnected={() => {
               console.log("LiveKit Room disconnected");
-              // Do not close immediately, let user see the state or reconnect
             }}
             onError={(e) => {
               console.error("LiveKit Room error:", e);
             }}
-            // Use a simple data attribute to style if needed
             data-lk-theme="default"
+            style={{ display: "contents" }}
           >
             <AgentInterface onClose={onClose} />
             <RoomAudioRenderer />
@@ -87,42 +99,26 @@ export default function AgentModal({ isOpen, onClose }: AgentModalProps) {
 }
 
 function AgentInterface({ onClose }: { onClose: () => void }) {
-  // Fallback if useVoiceAssistant isn't perfect: use manual state or just visualize audio
-  const { state } = useVoiceAssistant();
+  const { state, audioTrack } = useVoiceAssistant();
   const { localParticipant } = useLocalParticipant();
   const [isMuted, setIsMuted] = useState(false);
 
   const toggleMute = () => {
     if (localParticipant) {
-      // Toggle logic
       const target = !isMuted;
       localParticipant.setMicrophoneEnabled(!target);
       setIsMuted(target);
     }
   };
 
-  // Visualizer animation variants
-  const orbVariants: Variants = {
-    idle: { scale: 1, opacity: 0.5 },
-    listening: {
-      scale: [1, 1.1, 1],
-      opacity: 0.8,
-      transition: { repeat: Infinity, duration: 1.5 },
-    },
-    speaking: {
-      scale: [1, 1.3, 1],
-      opacity: 1,
-      transition: { repeat: Infinity, duration: 0.8, ease: "easeInOut" },
-    },
-  };
-
   return (
     <>
       <div className={styles.visualizer}>
-        <motion.div
-          className={styles.orb}
-          variants={orbVariants}
-          animate={state === "speaking" ? "speaking" : "listening"}
+        <AgentAudioVisualizerAura
+          state={state}
+          audioTrack={audioTrack}
+          size="lg"
+          themeMode="dark"
         />
       </div>
 
