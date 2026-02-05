@@ -111,6 +111,27 @@ Get started quickly with our pre-built frontend starter apps, or add telephony s
 
 For advanced customization, see the [complete frontend guide](https://docs.livekit.io/agents/start/frontend/).
 
+## Web Frontend
+
+A Framer-inspired landing page and web client to interact with the agent is located in the `web` directory.
+
+To run the frontend:
+
+1.  Navigate to the web directory:
+    ```console
+    cd web
+    ```
+2.  Install dependencies (if not already done):
+    ```console
+    npm install
+    ```
+3.  Start the development server:
+    ```console
+    npm run dev
+    ```
+
+The frontend will start at `http://localhost:3000`. It connects to the same LiveKit instance as the Python agent. Ensure your `web/.env.local` is correctly configured with `LIVEKIT_URL`, `LIVEKIT_API_KEY`, and `LIVEKIT_API_SECRET`.
+
 ## Tests and evals
 
 This project includes a complete suite of evals, based on the LiveKit Agents [testing & evaluation framework](https://docs.livekit.io/agents/build/testing/). To run them, use `pytest`.
