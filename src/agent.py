@@ -1,10 +1,14 @@
 import logging
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 import asyncio
 import json
 import aiohttp
 from typing import Optional
+
+# Resolve the directory containing this file (works reliably in containers)
+SCRIPT_DIR = Path(__file__).parent.resolve()
 from livekit import rtc
 from livekit.agents import (
     Agent,
@@ -24,13 +28,13 @@ from livekit.plugins import noise_cancellation, openai
 
 logger = logging.getLogger("agent")
 
-load_dotenv(os.path.join(os.path.dirname(__file__), "../.env.local"))
+load_dotenv(SCRIPT_DIR.parent / ".env.local")
 
 
 class Assistant(Agent):
     def __init__(self) -> None:
         # Load the prompt from ai_prompt.md
-        prompt_path = os.path.join(os.path.dirname(__file__), "ai_prompt.md")
+        prompt_path = SCRIPT_DIR / "ai_prompt.md"
         with open(prompt_path, "r", encoding="utf-8") as f:
             instructions = f.read()
 
