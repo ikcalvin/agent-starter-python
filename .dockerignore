@@ -46,3 +46,6 @@ test/
 tests/
 eval/
 evals/
+
+# Frontend (deployed separately to Vercel)
+web/
