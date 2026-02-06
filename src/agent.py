@@ -120,7 +120,7 @@ class Assistant(Agent):
         """
         context.disallow_interruptions()
 
-        url = "https://kcalvin.myvnc.com/webhook-test/save_lead"
+        url = "https://kcalvin.myvnc.com/webhook/save_lead"
         payload = {
             "name": name,
             "phone": phone,
