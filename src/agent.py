@@ -20,10 +20,10 @@ from livekit.agents import (
     RunContext,
     room_io,
     utils,
-    ToolError,
+    ToolError
 )
-from livekit.plugins import noise_cancellation, openai
-
+from livekit.plugins import noise_cancellation, openai, silero
+from livekit.plugins.turn_detector.multilingual import MultilingualModel
 
 
 logger = logging.getLogger("agent")
@@ -172,9 +172,15 @@ async def my_agent(ctx: JobContext):
 
     # Set up the session with OpenAI Realtime Model
     session = AgentSession(
-        llm=openai.realtime.RealtimeModel(
-            voice="ballad",
-        )
+        llm="google/gemini-2.5-flash",
+        stt="deepgram/nova-2",
+        tts="deepgram/aura-2:athena",
+        vad=silero.VAD.load(),
+        turn_detection=silero.TurnDetection.load(),
+            
+        # llm=openai.realtime.RealtimeModel(
+        #     voice="ballad",
+        # )
     )
 
     # Start the session, which initializes the voice pipeline and warms up the models
