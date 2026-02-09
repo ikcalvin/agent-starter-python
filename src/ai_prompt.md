@@ -108,7 +108,7 @@ Once required information is collected, call:
 
 After receiving results, use the following example and respond to the customer with the details:
 
-> “Based on your ZIP code and electricity usage, your home could support a **{{metadata.system_size_kw}} kilowatt** solar system. That system would generate roughly **{{metadata.estimated_annual_production_kwh}} kilowatt-hours** per year, offsetting about **{{metadata.estimated_bill_offset_percentage}}%** of your electricity bill. This is an estimate - final numbers come after a design review.”
+> "Based on the solar data for your area in **{{metadata.city}}**, **{{metadata.state}}**, your home could support a **{{metadata.system_size_kw}} kilowatt** solar system. That system would generate roughly **{{metadata.estimated_annual_production_kwh}} kilowatt-hours** per year, offsetting about **{{metadata.estimated_bill_offset_percentage}}%** of your electricity bill. This is an estimate - final numbers come after a design review."”
 
 Then ask:
 
