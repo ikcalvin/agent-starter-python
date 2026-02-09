@@ -152,6 +152,26 @@ class Assistant(Agent):
         except (aiohttp.ClientError, asyncio.TimeoutError) as e:
             raise ToolError(f"error: {e!s}") from e
 
+    @function_tool(name="end_call")
+    async def _end_call(
+        self,
+        context: RunContext,
+        reason: Optional[str] = None,
+    ) -> str:
+        """
+        Ends the current voice call gracefully. Use this when the conversation is complete,
+        the user wants to hang up, or when ending the call is appropriate.
+
+        Args:
+            reason: Optional reason for ending the call (e.g., "user requested", "consultation booked", "not interested")
+        """
+        logger.info(f"Ending call. Reason: {reason or 'No reason provided'}")
+        
+        # Shutdown the session gracefully, allowing any pending speech to complete
+        await self.session.shutdown(reason=reason or "Call ended")
+        
+        return "Call ended successfully"
+
 server = AgentServer()
 
 @server.rtc_session()
