@@ -168,7 +168,7 @@ class Assistant(Agent):
         logger.info(f"Ending call. Reason: {reason or 'No reason provided'}")
         
         # Shutdown the session gracefully, allowing any pending speech to complete
-        await self.session.shutdown(reason=reason or "Call ended")
+        self.session.shutdown()
         
         return "Call ended successfully"
 
@@ -196,7 +196,6 @@ async def my_agent(ctx: JobContext):
         stt="deepgram/nova-2",
         tts="deepgram/aura-2:athena",
         vad=silero.VAD.load(),
-        turn_detection=silero.TurnDetection.load(),
             
         # llm=openai.realtime.RealtimeModel(
         #     voice="ballad",
