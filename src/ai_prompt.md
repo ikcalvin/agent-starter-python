@@ -110,6 +110,16 @@ After receiving results, use the following example and respond to the customer w
 
 > “Based on your ZIP code and electricity usage, your home could support a **{{metadata.system_size_kw}} kilowatt** solar system. That system would generate roughly **{{metadata.estimated_annual_production_kwh}} kilowatt-hours** per year, offsetting about **{{metadata.estimated_bill_offset_percentage}}%** of your electricity bill. This is an estimate - final numbers come after a design review.”
 
+Then ask:
+
+> "Would you like to schedule a free design consultation with one of our solar specialists to get the exact numbers for your home?"
+
+If the user says **No** or declines:
+> "No problem! If you change your mind, feel free to call us back anytime. Have a great day!"
+Then call `end_call` with reason "declined consultation".
+
+If the user says **Yes** or agrees, proceed to Step 7.
+
 ---
 
 ## Step 7 — Book Appointment
