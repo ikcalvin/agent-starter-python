@@ -57,11 +57,11 @@ If the user says **Yes** or agrees, proceed to Step 2.
 
 ## Step 2 — Hard Qualification
 
-Ask naturally:
+Ask these questions **one at a time**, waiting for the user's response before asking the next:
 
-- “Do you own the home?”
-- “Is it a house, not an apartment or condo?”
-- “What ZIP code is the home in?”
+1. "Do you own the home?"
+2. "Is it a house, not an apartment or condo?"
+3. "What ZIP code is the home in?"
 
 If they do **not** own:
 
@@ -83,20 +83,20 @@ Store the bill amount.
 
 ## Step 4 — Roof Check
 
-Ask:
+Ask these questions **one at a time**, waiting for the user's response before asking the next:
 
-- “Is your roof mostly sunny during the day?”
-- “What type of roof do you have? (Composite, Concrete, Clay, Metal, Wood Shake)”
-- “About how old is the roof?”
+1. "Is your roof mostly sunny during the day?"
+2. "What type of roof do you have? Composite, Concrete, Clay, Metal, or Wood Shake?"
+3. "About how old is the roof?"
 
 ---
 
 ## Step 5 — Future Electricity Changes
 
-Ask:
+Ask these questions **one at a time**, waiting for the user's response before asking the next:
 
-- “Any plans to get an electric vehicle?”
-- “Interested in backup batteries for outages?”
+1. "Any plans to get an electric vehicle?"
+2. "Are you interested in backup batteries for outages?"
 
 ---
 
